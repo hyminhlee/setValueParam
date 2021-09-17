@@ -1,0 +1,17 @@
+UPDATE MST_CNTR_STS_HIS A
+SET CNTR_STS_EVNT_DT = (SELECT CASE WHEN B.CO_CRE_FLG='Y' THEN TO_DATE(SUBSTR(@[mft_dt], 1, 10),'YYYY-MM-DD')  ELSE A.CNTR_STS_EVNT_DT END 
+                      FROM MST_CONTAINER B
+                      WHERE A.CNTR_NO = B.CNTR_NO)
+ , OFC_CD		    = @[ofc_cd]          
+ , UPD_USR_ID		= @[upd_usr_id]
+ , UPD_DT		    = LOCALTIMESTAMP
+WHERE 1=1
+AND CNTR_NO BETWEEN CONCAT(@[fm_no],'0') AND CONCAT(@[to_no],'9')
+AND    LENGTH(CNTR_NO) = 11
+AND    CNTR_STS_CD IN ('LSI','OWN') 
+AND    CNTR_STS_SEQ =(SELECT /*+ INDEX( B XAK5MST_CNTR_STS_HIS) */  B.CNTR_STS_SEQ
+                     FROM MST_CNTR_STS_HIS B
+                     WHERE A.CNTR_NO = B.CNTR_NO
+                     AND   B.CNTR_STS_CD IN ('LSI','OWN')  
+                     ORDER BY CNTR_NO ASC, PRNT_CNTR_STS_EVNT_DT ASC, CNTR_STS_SEQ ASC
+                     LIMIT 1)

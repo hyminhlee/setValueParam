@@ -1,0 +1,5 @@
+cntrLotVO.setMftDt("");
+cntrLotVO.setOfcCd("");
+cntrLotVO.setUpdUsrId("");
+cntrLotVO.setFmNo("");
+cntrLotVO.setToNo("");
